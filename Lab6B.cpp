@@ -56,10 +56,7 @@ int main()
     {
 
         inFile >> names[namesTracker];
-        /*Note: Having them fixed & setP when piped in aligns int vs double
-        automatically without need to change variable type i.e.
-        ints show as ints and doubles show as doubles*/
-        inFile >> scores[scoresTracker] >> fixed >> setprecision(2);
+        inFile >> scores[scoresTracker];
 
         // Error Checker accounting for endl at eof
         if (!inFile)
