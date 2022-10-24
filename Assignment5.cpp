@@ -46,8 +46,7 @@ int main()
         break;
     } while (!inFile.is_open());
     outFile.open("[10-09-22]Report.txt");
-    outFile.open("[10-10-22]Report.txt");
-    outFile.open("[10-11-22]Report.txt");
+
     // While loop takes in input until EoF
     while (!inFile.eof())
     {
@@ -64,31 +63,59 @@ int main()
         dataTracker++;
     }
 
-    // Checking that Speeds and Weights don't violate laws
-    // Just Need to replace cout with outFile
+    // Loop prints out violations and increases counter per violation
+    // Open various files in case of date change closing previous date
     int violations = 0;
     for (int i = 0; i < dataTracker; i++)
     {
+        if (date[i] == "10-09-2022")
+        {
 
-        if (weight[i] < 5000 && speed[i] > 45)
-        {
-            outFile << "[" << time[i] << "] "
-                    << licensePlate[i] << endl;
-            violations++;
-        }
-        if (weight[i] >= 5000 && speed[i] > 30)
-        {
-            outFile << "[" << time[i] << "] "
-                    << licensePlate[i] << endl;
-            violations++;
+            if (weight[i] < 5000 && speed[i] > 45)
+            {
+                outFile << "[" << time[i] << "] "
+                        << licensePlate[i] << endl;
+                violations++;
+            }
+            if (weight[i] >= 5000 && speed[i] > 30)
+            {
+                outFile << "[" << time[i] << "] "
+                        << licensePlate[i] << endl;
+                violations++;
+            }
+            continue;
         }
     }
+    // Closing file for violations occuring on 10/09/22
+    outFile.close();
+
+    // Opening the File for violations occuring on 10/10/22
+    outFile.open("[10-10-2022]Report.txt");
+    // Printing the violations for 10/10/22
+    for (int i = 0; i < dataTracker; i++)
+    {
+        if (date[i] == "10-10-2022")
+        {
+
+            if (weight[i] < 5000 && speed[i] > 45)
+            {
+                outFile << "[" << time[i] << "] "
+                        << licensePlate[i] << endl;
+                violations++;
+            }
+            if (weight[i] >= 5000 && speed[i] > 30)
+            {
+                outFile << "[" << time[i] << "] "
+                        << licensePlate[i] << endl;
+                violations++;
+            }
+            continue;
+        }
+    }
+    //DO THE SAME FOR DATE 10/11/22
+    
     // Closing the Files
     outFile.close();
-    outFile.close();
-    outFile.close();
     inFile.close();
-
-    cout << endl;
     cout << violations << " Violations logged." << endl;
 }
