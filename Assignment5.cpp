@@ -9,12 +9,11 @@
 #include <iomanip>
 #include <fstream>
 #include <limits>
-#include <cstdlib>
 
 using namespace std;
 
 // Use arrays
-const int ARRAY_SIZE = 10000;
+const int ARRAY_SIZE = 1010;
 
 // Intro to Main Code:
 int main()
@@ -50,35 +49,35 @@ int main()
     // While loop takes in input until EoF
     while (!inFile.eof())
     {
-        inFile >> licensePlate[dataTracker];
-        inFile >> date[dataTracker];
-        inFile >> time[dataTracker];
+        getline(inFile, licensePlate[dataTracker], ',');
+        getline(inFile, date[dataTracker], ',');
+        getline(inFile, time[dataTracker], ',');
         inFile >> weight[dataTracker];
-        inFile >> speed[dataTracker];
+        inFile.clear();
+        inFile.ignore(numeric_limits<streamsize>::max(), ',');
 
-        // Error Checker accounting for comma seperated values
-        if (!inFile)
-        {
-            if (!inFile.eof())
-            {
-                inFile.clear();
-                inFile.ignore(numeric_limits<streamsize>::max(), ',');
-            }
-            continue;
-        }
+        inFile >> speed[dataTracker];
+        inFile.clear();
+        inFile.ignore(numeric_limits<streamsize>::max(), '\n');
         dataTracker++;
     }
     // Closing Files after input gathered
     inFile.close();
-
     // Checking that Speeds and Weights don't violate laws
-    // Maybe set different trackers for weight and speed use then to calc violattions
+    /*FIX VIOLATION TO CORRECT OUPUT 
+    Change couts to outFile*/
+    int violations = 0;
     for (int i = 0; i < dataTracker; i++)
     {
 
-        if (weight[i] < 5000)
+        if (weight[i] < 5000 && speed[i] > 45)
         {
-            cout << "Violation" << endl;
+            cout << "[" << time[i] << "] "
+            << licensePlate[i] << endl;
+            violations += 1;
         }
     }
+    cout << endl;
+    cout << violations << " Violations logged." << endl;
+    
 }
