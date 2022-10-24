@@ -9,7 +9,6 @@
 #include <iomanip>
 #include <fstream>
 #include <limits>
-#include <climits>
 
 using namespace std;
 
@@ -27,7 +26,7 @@ int main()
     string licensePlate[ARRAY_SIZE] = {};
     string date[ARRAY_SIZE] = {};
     string time[ARRAY_SIZE] = {};
-    string weight[ARRAY_SIZE] = {};
+    int weight[ARRAY_SIZE] = {};
     int speed[ARRAY_SIZE] = {};
     int dataTracker = 0;
 
@@ -52,7 +51,7 @@ int main()
         getline(inFile, licensePlate[dataTracker], ',');
         getline(inFile, date[dataTracker], ',');
         getline(inFile, time[dataTracker], ',');
-        getline(inFile, weight[dataTracker], ',');
+        inFile >> weight[dataTracker];
         inFile >> speed[dataTracker];
         // Error Checker accounting for endl at eof
         if (!inFile)
@@ -60,7 +59,7 @@ int main()
             if (!inFile.eof())
             {
                 inFile.clear();
-                inFile.ignore(numeric_limits<streamsize>::max(), '\n');
+                inFile.ignore(numeric_limits<streamsize>::max(), ',');
             }
             continue;
         }
@@ -68,31 +67,18 @@ int main()
     }
     // Closing Files after input gathered
     inFile.close();
-
-    // Testing
-    cout << "\nLicenses: ";
-    for (int i = 0; i < dataTracker; i++)
+    //Checking that Speeds and Weights don't violate laws
+    for (int i = 0; i < weightTracker; i++)
     {
-        cout << licensePlate[i];
+       if (dataTracker < 5000 && dataTracker > 45)
+       {
+        cout << " Thats a Violation Son" << endl;
+       }
+       if (weight dataTracker >= 5000 && speeddataTracker > 30)
+       {
+        cout << "Thats another Violation boy" << endl;
+       }
+       
     }
-    cout << "\nDates: ";
-    for (int i = 0; i < dataTracker; i++)
-    {
-        cout << date[i];
-    }
-    cout << "\nTimes: ";
-    for (int i = 0; i < dataTracker; i++)
-    {
-        cout << time[i];
-    }
-    cout << "\nWeights: ";
-    for (int i = 0; i < dataTracker; i++)
-    {
-        cout << weight[i];
-    }
-    cout << "\nSpeed: ";
-    for (int i = 0; i < dataTracker; i++)
-    {
-       cout << speed[i];
-    }
+    
 }
