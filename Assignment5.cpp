@@ -27,7 +27,7 @@ int main()
     string licensePlate[ARRAY_SIZE] = {};
     string date[ARRAY_SIZE] = {};
     string time[ARRAY_SIZE] = {};
-    string weight[ARRAY_SIZE] = {};
+    double weight[ARRAY_SIZE] = {};
     double speed[ARRAY_SIZE] = {};
     int dataTracker = 0;
 
@@ -50,10 +50,10 @@ int main()
     // While loop takes in input until EoF
     while (!inFile.eof())
     {
-        getline(inFile, licensePlate[dataTracker], ',');
-        getline(inFile, date[dataTracker], ',');
-        getline(inFile, time[dataTracker], ',');
-        getline(inFile, weight[dataTracker], ',');
+        inFile >> licensePlate[dataTracker];
+        inFile >> date[dataTracker];
+        inFile >> time[dataTracker];
+        inFile >> weight[dataTracker];
         inFile >> speed[dataTracker];
 
         // Error Checker accounting for comma seperated values
