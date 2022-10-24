@@ -14,7 +14,7 @@
 using namespace std;
 
 // Use arrays
-const int ARRAY_SIZE = INT_MAX;
+const int ARRAY_SIZE = 10000;
 
 // Intro to Main Code:
 int main()
@@ -27,7 +27,7 @@ int main()
     string licensePlate[ARRAY_SIZE] = {};
     string date[ARRAY_SIZE] = {};
     string time[ARRAY_SIZE] = {};
-    int weight[ARRAY_SIZE] = {};
+    string weight[ARRAY_SIZE] = {};
     int speed[ARRAY_SIZE] = {};
     int dataTracker = 0;
 
@@ -52,7 +52,7 @@ int main()
         getline(inFile, licensePlate[dataTracker], ',');
         getline(inFile, date[dataTracker], ',');
         getline(inFile, time[dataTracker], ',');
-        inFile >> weight[dataTracker];
+        getline(inFile, weight[dataTracker], ',');
         inFile >> speed[dataTracker];
         // Error Checker accounting for endl at eof
         if (!inFile)
@@ -66,30 +66,33 @@ int main()
         }
         dataTracker++;
     }
+    // Closing Files after input gathered
+    inFile.close();
+
     // Testing
+    cout << "Licenses: ";
     for (int i = 0; i < dataTracker; i++)
     {
-        cout << "Licenses: " << licensePlate[i];
+        cout << licensePlate[i];
     }
-    cout << endl;
+    cout << "Dates: ";
     for (int i = 0; i < dataTracker; i++)
     {
-        cout << "Dates: " << date[i];
+        cout << date[i];
     }
-    cout << endl;
+    cout << "Times: ";
     for (int i = 0; i < dataTracker; i++)
     {
-        cout << "Times: " << time[i];
+        cout << time[i];
     }
-    cout << endl;
+    cout << "Weights: ";
     for (int i = 0; i < dataTracker; i++)
     {
-        cout << "Weights: " << weight[i];
+        cout << weight[i];
     }
-    cout << endl;
+    cout << "Speed: ";
     for (int i = 0; i < dataTracker; i++)
     {
-        cout << "Speed: " << speed[i];
+       cout << speed[i];
     }
-    cout << endl;
 }
