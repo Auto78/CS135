@@ -70,27 +70,27 @@ int main()
     inFile.close();
 
     // Testing
-    cout << "Licenses: ";
+    cout << "\nLicenses: ";
     for (int i = 0; i < dataTracker; i++)
     {
         cout << licensePlate[i];
     }
-    cout << "Dates: ";
+    cout << "\nDates: ";
     for (int i = 0; i < dataTracker; i++)
     {
         cout << date[i];
     }
-    cout << "Times: ";
+    cout << "\nTimes: ";
     for (int i = 0; i < dataTracker; i++)
     {
         cout << time[i];
     }
-    cout << "Weights: ";
+    cout << "\nWeights: ";
     for (int i = 0; i < dataTracker; i++)
     {
         cout << weight[i];
     }
-    cout << "Speed: ";
+    cout << "\nSpeed: ";
     for (int i = 0; i < dataTracker; i++)
     {
        cout << speed[i];
