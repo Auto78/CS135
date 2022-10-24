@@ -64,8 +64,7 @@ int main()
     // Closing Files after input gathered
     inFile.close();
     // Checking that Speeds and Weights don't violate laws
-    /*FIX VIOLATION TO CORRECT OUPUT 
-    Change couts to outFile*/
+    // Just Need to replace cout with outFile
     int violations = 0;
     for (int i = 0; i < dataTracker; i++)
     {
@@ -73,11 +72,16 @@ int main()
         if (weight[i] < 5000 && speed[i] > 45)
         {
             cout << "[" << time[i] << "] "
-            << licensePlate[i] << endl;
-            violations += 1;
+                 << licensePlate[i] << endl;
+            violations++;
+        }
+        if (weight[i] >= 5000 && speed[i] > 30)
+        {
+            cout << "[" << time[i] << "] "
+                 << licensePlate[i] << endl;
+            violations++;
         }
     }
     cout << endl;
     cout << violations << " Violations logged." << endl;
-    
 }
