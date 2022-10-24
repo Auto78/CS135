@@ -9,6 +9,7 @@
 #include <iomanip>
 #include <fstream>
 #include <limits>
+#include <cstdlib>
 
 using namespace std;
 
@@ -26,8 +27,8 @@ int main()
     string licensePlate[ARRAY_SIZE] = {};
     string date[ARRAY_SIZE] = {};
     string time[ARRAY_SIZE] = {};
-    int weight[ARRAY_SIZE] = {};
-    int speed[ARRAY_SIZE] = {};
+    string weight[ARRAY_SIZE] = {};
+    double speed[ARRAY_SIZE] = {};
     int dataTracker = 0;
 
     // Loop asks user to open a file and checks that it opens
@@ -45,15 +46,17 @@ int main()
         }
         break;
     } while (!inFile.is_open());
+
     // While loop takes in input until EoF
     while (!inFile.eof())
     {
         getline(inFile, licensePlate[dataTracker], ',');
         getline(inFile, date[dataTracker], ',');
         getline(inFile, time[dataTracker], ',');
-        inFile >> weight[dataTracker];
+        getline(inFile, weight[dataTracker], ',');
         inFile >> speed[dataTracker];
-        // Error Checker accounting for endl at eof
+
+        // Error Checker accounting for comma seperated values
         if (!inFile)
         {
             if (!inFile.eof())
@@ -67,18 +70,15 @@ int main()
     }
     // Closing Files after input gathered
     inFile.close();
-    //Checking that Speeds and Weights don't violate laws
-    for (int i = 0; i < weightTracker; i++)
+
+    // Checking that Speeds and Weights don't violate laws
+    // Maybe set different trackers for weight and speed use then to calc violattions
+    for (int i = 0; i < dataTracker; i++)
     {
-       if (dataTracker < 5000 && dataTracker > 45)
-       {
-        cout << " Thats a Violation Son" << endl;
-       }
-       if (weight dataTracker >= 5000 && speeddataTracker > 30)
-       {
-        cout << "Thats another Violation boy" << endl;
-       }
-       
+
+        if (weight[i] < 5000)
+        {
+            cout << "Violation" << endl;
+        }
     }
-    
 }
