@@ -1,15 +1,16 @@
 /*
     Name: Alvaro Cruz, 5005488379, 1005, Lab 7A
-    Description:
-    Input:
-    Output:
+    Description: Program takes input into a 2D array and displays sums
+    Both in Row to Column and Column to Row
+    Input: User inputs File Name to be open
+    Output: Outputs the values from the file in Rows to Columns and
+    Columns to Row. Along with their sums in each respective row/column.
 */
 
 // Preprocessor Directives
 #include <iostream>
 #include <fstream>
 #include <limits>
-// Switch to doubles Fixed with SetP
 #include <iomanip>
 
 using namespace std;
@@ -33,7 +34,7 @@ int main()
 
         if (!iFile.is_open())
         {
-            cout << "\nError invalid file name\n";
+            cout << "\nError: Invalid File Name\n";
             iFile.clear();
             iFile.ignore(numeric_limits<streamsize>::max(), '\n');
             continue;
@@ -49,31 +50,42 @@ int main()
             iFile >> arr[r][c];
         }
     }
-    cout << "ROW SUMS:\n";
+    cout << "\nROW SUMS:\n";
     // Printing Data from the 2D Array
     // Row to colum based
-    double sum = 0.0;
-    ;
+    double sumRowBased = 0.0;
     for (int r = 0; r < ROW; r++)
     {
         for (int c = 0; c < COLUMN; c++)
         {
 
-            cout << fixed << setprecision(1) << arr[r][c] << " + ";
-            sum = arr[r][c];
+            cout << left << setw(4) << fixed << setprecision(1) << arr[r][c];
+            // Places + or = based on the current Column using Ternary
+            (c == COLUMN - 1) ? cout << " " : cout << " + ";
+            sumRowBased += arr[r][c];
         }
-        cout << sum;
+        cout << "= " << sumRowBased;
+        // reset sums so its set for next row
+        sumRowBased = 0;
         cout << endl;
     }
 
     cout << endl;
     // Colum to Row based
+    double sumColumnBased = 0.0;
+    cout << "COLUMN SUMS:\n";
     for (int c = 0; c < COLUMN; c++)
     {
         for (int r = 0; r < ROW; r++)
         {
-            cout << arr[r][c] << " ";
+            cout << left << setw(4) << fixed << setprecision(1) << arr[r][c];
+            sumColumnBased += arr[r][c];
+            // Places + or = Based on current Row using Ternary
+            (r == ROW - 1) ? cout << " " : cout << " + ";
         }
+        cout << "= " << sumColumnBased;
+        // reset sums so its set for next column
+        sumColumnBased = 0;
         cout << endl;
     }
     cout << endl;
