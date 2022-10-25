@@ -9,8 +9,8 @@
 #include <iostream>
 #include <fstream>
 #include <limits>
-//Switch to doubles Fixed with SetP
-#include<iomanip>
+// Switch to doubles Fixed with SetP
+#include <iomanip>
 
 using namespace std;
 // Declaring const variables
@@ -22,7 +22,7 @@ int main()
     // Variable declaration
     ifstream iFile;
     string fileName = " ";
-    int arr[ROW][COLUMN];
+    double arr[ROW][COLUMN];
 
     // loop for checking file is open
     do
@@ -49,16 +49,23 @@ int main()
             iFile >> arr[r][c];
         }
     }
+    cout << "ROW SUMS:\n";
     // Printing Data from the 2D Array
     // Row to colum based
+    double sum = 0.0;
+    ;
     for (int r = 0; r < ROW; r++)
     {
         for (int c = 0; c < COLUMN; c++)
         {
-            cout << arr[r][c] << " ";
+
+            cout << fixed << setprecision(1) << arr[r][c] << " + ";
+            sum = arr[r][c];
         }
+        cout << sum;
         cout << endl;
     }
+
     cout << endl;
     // Colum to Row based
     for (int c = 0; c < COLUMN; c++)
