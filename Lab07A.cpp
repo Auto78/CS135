@@ -21,33 +21,33 @@ const int COLUMN = 10;
 int main()
 {
     // Variable declaration
-    ifstream iFile;
+    ifstream inFile;
     string fileName = " ";
-    double arr[ROW][COLUMN];
+    double array[ROW][COLUMN];
 
     // loop for checking file is open
     do
     {
         cout << "Enter a file name\n**";
         getline(cin, fileName);
-        iFile.open(fileName);
+        inFile.open(fileName);
 
-        if (!iFile.is_open())
+        if (!inFile.is_open())
         {
             cout << "\nError: Invalid File Name\n";
-            iFile.clear();
-            iFile.ignore(numeric_limits<streamsize>::max(), '\n');
+            inFile.clear();
+            inFile.ignore(numeric_limits<streamsize>::max(), '\n');
             continue;
         }
         break;
-    } while (!iFile.is_open());
+    } while (!inFile.is_open());
     // Storing Data in the 2D Array
     // Note: having r be row and c be column helps me keep track better
     for (int r = 0; r < ROW; r++)
     {
         for (int c = 0; c < COLUMN; c++)
         {
-            iFile >> arr[r][c];
+            inFile >> array[r][c];
         }
     }
     cout << "\nROW SUMS:\n";
@@ -59,10 +59,10 @@ int main()
         for (int c = 0; c < COLUMN; c++)
         {
 
-            cout << left << setw(4) << fixed << setprecision(1) << arr[r][c];
+            cout << left << setw(4) << fixed << setprecision(1) << array[r][c];
             // Places + or = based on the current Column using Ternary
             (c == COLUMN - 1) ? cout << " " : cout << " + ";
-            sumRowBased += arr[r][c];
+            sumRowBased += array[r][c];
         }
         cout << "= " << sumRowBased;
         // reset sums so its set for next row
@@ -78,8 +78,8 @@ int main()
     {
         for (int r = 0; r < ROW; r++)
         {
-            cout << left << setw(4) << fixed << setprecision(1) << arr[r][c];
-            sumColumnBased += arr[r][c];
+            cout << left << setw(4) << fixed << setprecision(1) << array[r][c];
+            sumColumnBased += array[r][c];
             // Places + or = Based on current Row using Ternary
             (r == ROW - 1) ? cout << " " : cout << " + ";
         }
