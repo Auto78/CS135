@@ -13,7 +13,7 @@
 
 using namespace std;
 
-// Use arrays
+// Use Arrays
 const int ARRAY_SIZE = 1010;
 
 // Intro to Main Code:
@@ -22,7 +22,6 @@ int main()
 
     // Variable Declaration
     ifstream inFile; // Input file stream variable
-
     string fileName; // Name of file to be opened
     string licensePlate[ARRAY_SIZE] = {};
     string date[ARRAY_SIZE] = {};
