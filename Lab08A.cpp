@@ -8,6 +8,7 @@
 */
 // Preprocessor Directives
 #include <iostream>
+#include <limits>
 
 using namespace std;
 
@@ -66,14 +67,14 @@ int getIntegerInput(string ask, int lowest, int highest)
 		// If statments ensure correct conditions are met
 		if (cin.fail())
 		{
-			cout << "Error: Invalid entry, please retry\n";
+			cout << "\nError: Invalid input!\n";
 			cin.clear();
 			cin.ignore(numeric_limits<streamsize>::max(), '\n');
 			continue;
 		}
-		if (value <= lowest || value > highest)
+		if (value < lowest || value > highest)
 		{
-			cout << "Error: Invalid entry, please retry\n";
+			cout << "\nError: Invalid input!\n";
 			continue;
 		}
 		break;
@@ -105,10 +106,10 @@ void writeUpsideDownTriangle(int number, char logo)
 {
 	cout << endl;
 	// Outer for loop controls spaces in between rows
-	for (int i = number; i >= 1; --i)
+	for (int i = number; i > 0; i--)
 	{
 		// Inner for loop controls whats printed
-		for (int j = 1; j <= i; ++j)
+		for (int j = 0; j < i; ++j)
 		{
 			cout << logo;
 		}
@@ -123,10 +124,10 @@ void writeUpsideDownTriangle(int number, char logo)
 void writeRightsideUpTriangle(int number2, char symbol)
 {
 	// Outer for loop controls spaces in between rows
-	for (int i = 1; i <= number2; ++i)
+	for (int i = 0; i < number2; i++)
 	{
 		// Inner for loop controls whats printed
-		for (int j = 1; j <= i; ++j)
+		for (int j = 0; j <= i; j++)
 		{
 			cout << symbol;
 		}
