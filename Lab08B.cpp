@@ -28,16 +28,33 @@ int main()
 {
     // varaible Declarations
     string prompt = "Enter a circle radius between 0.500000 and 20.500000 \n**";
-   getDoubleInput(prompt, MINIMUM, MAXIMUM);
+    getDoubleInput(prompt, MINIMUM, MAXIMUM);
 }
 
 // Function Declaractions
-double getDoubleInput(string prompt, double minimum, double maximum){
-    //Call the checkFailure in order to do the whole cin.fail and within range stuff
+double getDoubleInput(string prompt, double minimum, double maximum)
+{
+    // Call the checkFailure in order to do the whole cin.fail and within range stuff
     int input = 0;
-    cout << prompt;
-    cin >> input;
+    do
+    {
+        cout << prompt;
+        cin >> input;
+        checkFailure(input, MINIMUM, MAXIMUM);
+        break;
+    } while (true);
 }
-bool checkFailure(double input, double minimum, double maximum){
+bool checkFailure(double input, double minimum, double maximum)
+{
+    bool passes = false;
+    if (cin.fail())
+    {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Wrong number";
+    }
+    //Fix this
+    (input < minimum || input > maximum) ? (passes = false) && (cout << "Bad Answer\n") : (passes = true) && (cout << "Good answer\n");
 
+    return passes;
 }
