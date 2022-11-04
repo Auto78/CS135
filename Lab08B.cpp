@@ -1,8 +1,10 @@
 /*
           Name: Alvaro A. Cruz, #5005488379, 1005, Labo08B
-          Description:
-          Input:
-          Output:
+          Description: Program displays information about a circle
+          given a radius within certain range. Implementing various
+          self-declared functions.
+          Input:User inputs radius of circle
+          Output: Displays Circumference, Area, and radius
 */
 
 // Preprocessor Directives
@@ -20,7 +22,7 @@ double circumference(double);
 double area(double);
 
 // Const variable Declarations
-const double PI = 3.1415;
+const double PI = 3.14159;
 const double MINIMUM = 0.5;
 const double MAXIMUM = 20.5;
 bool valid = true;
@@ -28,37 +30,49 @@ bool valid = true;
 // Intro to Main code
 int main()
 {
-    // varaible Declarations
+    // Variable Declarations
     string prompt = "Enter a circle radius between 0.500000 and 20.500000 \n**";
-
     double radius = getDoubleInput(prompt, MINIMUM, MAXIMUM);
     double circumferenceTwo = circumference(radius);
     double areaTwo = area(radius);
+
+    // Output Phase
     cout << fixed << setprecision(2)
-         << "Radius: " << radius << endl
-         << "Circumference: " << circumferenceTwo << endl
-         << "Area: " << areaTwo << endl;
+         << "\nRadius: " << radius
+         << "\nCircumference: " << circumferenceTwo
+         << "\nArea: " << areaTwo << endl;
 }
 
 // Function Declaractions
+/*
+          FUNCTION_IDENTIFIER: Function asks user for integer value(input)
+          parameters: String containing Prompt, Two doubles for Max and Minimum respectively
+          return value: Function returns integer value(input)
+*/
 double getDoubleInput(string question, double minimum, double maximum)
 {
-    // Call the checkFailure in order to do the whole cin.fail and within range stuff
     double input = 0;
     do
     {
         cout << question;
         cin >> input;
         checkFailure(input, minimum, maximum);
-        continue;
     } while (!valid);
     return input;
 }
+/*
+         FUNCTION_IDENTIFIER: Function checks user input is within acceptable range
+         and doesn't fail cin.
+         parameters: Three double values; user input, minimum, and maximum
+         value for acceptable range.
+         return value: Function returns boolean value dependent user input.
+         If invalid, returns false Else returns true;
+*/
 bool checkFailure(double input, double minimum, double maximum)
 {
     do
     {
-        if (cin.fail() || input < minimum || input > maximum)
+        if (cin.fail())
         {
             cout << "\nError: Invalid radius!\n";
             cin.clear();
@@ -75,7 +89,7 @@ bool checkFailure(double input, double minimum, double maximum)
             return valid;
             continue;
         }
-        else
+        if (input > minimum || input < maximum)
         {
             valid = true;
             return valid;
@@ -83,11 +97,21 @@ bool checkFailure(double input, double minimum, double maximum)
         }
     } while (true);
 }
+/*
+         FUNCTION_IDENTIFIER: Function Calculates circumference given radius value.
+         parameters: Double value for radius
+         return value: Returns calculated circumference of circle
+*/
 double circumference(double value)
 {
     double circleCircumference = 2 * PI * value;
     return circleCircumference;
 }
+/*
+         FUNCTION_IDENTIFIER: Calculates Area given radius value
+         parameters: double Value for radius
+         return value: Returns calculated Area of circle
+*/
 double area(double value)
 {
     double circleArea = PI * pow(value, 2);
