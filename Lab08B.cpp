@@ -9,6 +9,7 @@
 #include <iostream>
 #include <iomanip>
 #include <limits>
+#include <cmath>
 
 using namespace std;
 
@@ -22,39 +23,73 @@ double area(double);
 const double PI = 3.1415;
 const double MINIMUM = 0.5;
 const double MAXIMUM = 20.5;
+bool valid = true;
 
 // Intro to Main code
 int main()
 {
     // varaible Declarations
     string prompt = "Enter a circle radius between 0.500000 and 20.500000 \n**";
-    getDoubleInput(prompt, MINIMUM, MAXIMUM);
+
+    double radius = getDoubleInput(prompt, MINIMUM, MAXIMUM);
+    double circumferenceTwo = circumference(radius);
+    double areaTwo = area(radius);
+    cout << fixed << setprecision(2)
+         << "Radius: " << radius << endl
+         << "Circumference: " << circumferenceTwo << endl
+         << "Area: " << areaTwo << endl;
 }
 
 // Function Declaractions
-double getDoubleInput(string prompt, double minimum, double maximum)
+double getDoubleInput(string question, double minimum, double maximum)
 {
     // Call the checkFailure in order to do the whole cin.fail and within range stuff
-    int input = 0;
+    double input = 0;
     do
     {
-        cout << prompt;
+        cout << question;
         cin >> input;
-        checkFailure(input, MINIMUM, MAXIMUM);
-        break;
-    } while (true);
+        checkFailure(input, minimum, maximum);
+        continue;
+    } while (!valid);
+    return input;
 }
 bool checkFailure(double input, double minimum, double maximum)
 {
-    bool passes = false;
-    if (cin.fail())
+    do
     {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Wrong number";
-    }
-    //Fix this
-    (input < minimum || input > maximum) ? (passes = false) && (cout << "Bad Answer\n") : (passes = true) && (cout << "Good answer\n");
+        if (cin.fail() || input < minimum || input > maximum)
+        {
+            cout << "\nError: Invalid radius!\n";
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            valid = false;
+            return valid;
+            continue;
+        }
+        if (input < minimum || input > maximum)
+        {
+            cout << "\nError: Invalid radius!\n";
 
-    return passes;
+            valid = false;
+            return valid;
+            continue;
+        }
+        else
+        {
+            valid = true;
+            return valid;
+            break;
+        }
+    } while (true);
+}
+double circumference(double value)
+{
+    double circleCircumference = 2 * PI * value;
+    return circleCircumference;
+}
+double area(double value)
+{
+    double circleArea = PI * pow(value, 2);
+    return circleArea;
 }
