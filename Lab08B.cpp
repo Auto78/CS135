@@ -25,7 +25,6 @@ double area(double);
 const double PI = 3.14159;
 const double MINIMUM = 0.5;
 const double MAXIMUM = 20.5;
-bool valid = true;
 
 // Intro to Main code
 int main()
@@ -51,12 +50,14 @@ int main()
 */
 double getDoubleInput(string question, double minimum, double maximum)
 {
+    bool valid = true;
     double input = 0;
     do
     {
         cout << question;
         cin >> input;
-        checkFailure(input, minimum, maximum);
+        valid = checkFailure(input, minimum, maximum);
+        
     } while (!valid);
     return input;
 }
@@ -70,6 +71,7 @@ double getDoubleInput(string question, double minimum, double maximum)
 */
 bool checkFailure(double input, double minimum, double maximum)
 {
+    bool valid = true;
     do
     {
         if (cin.fail())
