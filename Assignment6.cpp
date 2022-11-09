@@ -13,79 +13,70 @@
 #include <vector>
 #include <limits>
 #include <fstream>
+#include<algorithm>
 
 using namespace std;
 // Function Protoypes
 void displayLogo();
-int openLevel(int &, ifstream &);
-vector<vector<char> > levelSelection(int, ifstream &);
+void openLevel(ifstream &);
+vector<vector<char> > readLevel(ifstream &);
+vector<vector<char> > replaceBoard(vector<vector<char> >);
+void printsBoard(vector<vector<char> >);
 
 // Intro to main code
 int main()
 {
     // Variable Declaration
-    ifstream inFile; // Input file stream variable
-    int guesses = 5;
-    char guess = ' ';
-    vector<char> failedGuesses; //Vector contains the incorrectGuesses
+    ifstream inFile;             // Input file stream variable
+    char guess = ' ';            // Letter to Check
+    vector<char> exhaustedGuess; // Vector contains the used guesses
+    int incorrectGuess = 5;      // Number of incorrect guess avaliable
     //  Display Game Logo
     displayLogo();
     // Tracks what level is currently playing;
-    int level = openLevel(level, inFile);
-    // 2D Vector containing solution to crossword
-    vector<vector<char> > answerKeyVector2D = levelSelection(level, inFile);
-    vector<vector<char> > gameBoard = answerKeyVector2D;
-    // Testing Printing the soultion vector
+    openLevel(inFile);
+    // Vector conatians the level in a gameboard style
+    vector<vector<char> > gameBoard;
+    gameBoard = readLevel(inFile);
+    // This vector contains the answerkey before replacing the gameboard to only # & _
+    vector<vector<char> > answerKey = gameBoard;
+    // Replacing the gameboard with inital Status; # & _
+    gameBoard = replaceBoard(gameBoard);
+    printsBoard(gameBoard);
+    printsBoard(answerKey);
 
-    for (unsigned int i = 0; i < gameBoard.size(); i++)
+    // Asking user for letter to check
+    do
     {
-        for (unsigned int j = 0; j < gameBoard[i].size(); j++)
-        {
-            (gameBoard.at(i).at(j) != '#') 
-            ? cout << left << setw(2) << "_" : cout << left << setw(2) << gameBoard.at(i).at(j);
-        }
-        cout << endl;
-    }
-
-do
-{
-    cout << "\nEnter a letter:\n";
-    cin >> guess;
-    for (unsigned int i = 0; i < answerKeyVector2D.size(); i++)
-    {
-        for (unsigned int j = 0; j < answerKeyVector2D[i].size(); j++)
-        {
-            if (answerKeyVector2D.at(i).at(j) == guess)
-            {   
-                cout << left << setw(2) << gameBoard.at(i).at(j);
+        cout << "\nEnter a letter:\n";
+        cin >> guess;
+        for (size_t i = 0; i < answerKey.size(); i++)
+        {   
+            for (size_t j = 0; i < answerKey[i].size(); i++)
+            {
+                
+            cout << answerKey[i][j];
             }
-            if (answerKeyVector2D.at(i).at(j) != guess) {
-               failedGuesses.push_back(guess);
-              (answerKeyVector2D.at(i).at(j) != '#') ? cout << left << setw(2) << "_" : cout << left << setw(2) << answerKeyVector2D.at(i).at(j);
-            }
-            
         }
-        cout << endl;
-    }
-    guesses--;
-
-} while (guesses > 0);
-
-    
-
+        exhaustedGuess.push_back(guess);
+    } while (true);
 }
+// Prints gameboard
+
 // Function to Print game Logo
 void displayLogo()
 {
-    cout << setw(17) << "Welcome to\n\n"
+    cout << endl
+         << setw(17) << "Welcome to\n\n"
          << setw(11) << "W\n"
-         << setw(13) << "CROSS\n"
+         << setw(15) << "C R O S S\n"
          << setw(11) << "R\n"
          << setw(12) << "D\n\n";
 }
 // Opens file according to Level and returns the level currently on.
-int openLevel(int &level, ifstream &inFile)
+void openLevel(ifstream &inFile)
 {
+    int level;
     do
     {
         cout << "Enter level to play:\n";
@@ -117,66 +108,49 @@ int openLevel(int &level, ifstream &inFile)
         }
     } while (!inFile.is_open());
     cout << endl;
-    return level;
 }
 // Hopefully this places the vector values in the right place
-vector<vector<char> > levelSelection(int level, ifstream &inFile)
+vector<vector<char> > readLevel(ifstream &inFile)
 {
     vector<vector<char> > solutions2D;
-    int height, width = 0;
-    if (level == 1)
+    string line;
+    while (getline(inFile, line))
     {
-        // Settings for first level
-        for (height = 1; height <= 5; height++)
+        vector<char> vectorRow;
+        for (unsigned int i = 0; i < line.length(); i++)
         {
-            // Vector that acts as row
-            vector<char> vectorRow;
-            char soultions;
-            for (width = 1; width <= 10; width++)
-            {
-                // gather the row and add to vector
-                inFile >> soultions;
-                vectorRow.push_back(soultions);
-            }
-            // Add the rows to the solution vector
-            solutions2D.push_back(vectorRow);
+            vectorRow.push_back(line[i]);
         }
+        solutions2D.push_back(vectorRow);
     }
-    if (level == 2)
-    {
-        // Settings for first level
-        for (height = 1; height <= 7; height++)
-        {
-            // Vector that acts as row
-            vector<char> vectorRow;
-            char soultions;
-            for (width = 1; width <= 6; width++)
-            {
-                // gather the row and add to vector
-                inFile >> soultions;
-                vectorRow.push_back(soultions);
-            }
-            // Add the rows to the solution vector
-            solutions2D.push_back(vectorRow);
-        }
-    }
-    if (level == 3)
-    {
-        // Settings for first level
-        for (height = 1; height <= 7; height++)
-        {
-            // Vector that acts as row
-            vector<char> vectorRow;
-            char soultions;
-            for (width = 1; width <= 9; width++)
-            {
-                // gather the row and add to vector
-                inFile >> soultions;
-                vectorRow.push_back(soultions);
-            }
-            // Add the rows to the solution vector
-            solutions2D.push_back(vectorRow);
-        }
-    }
+    inFile.close();
     return solutions2D;
+}
+// Makes replacements to the board having it start as # and _ only
+vector<vector<char> > replaceBoard(vector<vector<char> > board)
+{
+
+    for (size_t i = 0; i < board.size(); i++)
+    {
+        for (size_t j = 0; j < board[i].size(); j++)
+        {
+            if (board[i][j] != '#' && board[i][j] != ' ')
+            {
+                board[i][j] = '_';
+            }
+        }
+    }
+    return board;
+}
+// Prints the gameboard
+void printsBoard(vector<vector<char> > board)
+{
+    for (size_t i = 0; i < board.size(); i++)
+    {
+        for (size_t j = 0; j < board[i].size(); j++)
+        {
+            cout << board[i][j];
+        }
+        cout << endl;
+    }
 }
