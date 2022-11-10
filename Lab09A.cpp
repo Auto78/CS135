@@ -3,7 +3,7 @@
           Description: Program displays calculations of two user
           inputted numbers given that they are within acceptable range
           Input:User inputs two numbers between certain parameters
-          Output: Prints to screen two prompts for user input, along with 
+          Output: Prints to screen two prompts for user input, along with
           correct calculations for given inputs.
 */
 
@@ -34,7 +34,15 @@ int main()
     double number1 = input1;
     double number2 = input2;
     addSubtract(input1, input2);
+
+    cout << fixed << setprecision(2) << endl
+         << number1 << " + " << number2 << " = " << input1 << endl
+         << number1 << " - " << number2 << " = " << input2 << endl;
+    double num1 = number1;
+    double num2 = number2;
     multiplyDivide(number1, number2);
+    cout << fixed << setprecision(2) << num1 << " * " << num2 << " = " << number1 << endl
+         << num1 << " / " << num2 << " = " << number2 << endl;
 }
 
 // Function Declaractions
@@ -97,7 +105,7 @@ bool checkFailure(double input, double minimum, double maximum)
 // Function Declaractions
 /*
           FUNCTION_IDENTIFIER: Function calls function to ask user for inputs and checks validity
-          parameters: Two doubles for input(s) 
+          parameters: Two doubles for input(s)
           return value: Void; Non-Returing
 */
 void getDoubleInputs(double &input1, double &input2)
@@ -118,34 +126,25 @@ void getDoubleInputs(double &input1, double &input2)
 /*
           FUNCTION_IDENTIFIER: Function passes two number by reference
           and then both adds and subtracts them.
-          parameters: Two doubles for input(s) 
+          parameters: Two doubles for input(s)
           return value: Void; Non-Returing, Prints to screen
 */
 void addSubtract(double &num1, double &num2)
 {
     double number1 = num1;
-    double number2 = num2;
     num1 = num1 + num2;
-    cout << endl
-         << fixed << setprecision(2)
-         << number1 << " + " << number2 << " = " << num1 << endl;
     num2 = number1 - num2;
-    cout << number1 << " - " << number2 << " = " << num2 << endl;
 }
 // Function Declaractions
 /*
           FUNCTION_IDENTIFIER: Function passes two numbers by reference
           and then both multples and divides them
-          parameters: Two doubles for input(s) 
+          parameters: Two doubles for input(s)
           return value: Void; Non-Returing, Prints to screen
 */
 void multiplyDivide(double &num1, double &num2)
 {
     double number1 = num1;
-    double number2 = num2;
     num1 = num1 * num2;
-    cout << fixed << setprecision(2)
-         << number1 << " * " << number2 << " = " << num1 << endl;
     num2 = number1 / num2;
-    cout << number1 << " / " << number2 << " = " << num2 << endl;
 }
