@@ -43,7 +43,7 @@ int main()
     // Replacing the gameboard with inital Status; # & _
     gameBoard = replaceBoard(gameBoard);
     printsBoard(gameBoard);
-    printsBoard(answerKey);
+
 
     // Asking user for letter to check
     do
