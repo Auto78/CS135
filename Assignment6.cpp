@@ -13,7 +13,7 @@
 #include <vector>
 #include <limits>
 #include <fstream>
-#include<algorithm>
+#include <algorithm>
 
 using namespace std;
 // Function Protoypes
@@ -40,6 +40,7 @@ int main()
     gameBoard = readLevel(inFile);
     // This vector contains the answerkey before replacing the gameboard to only # & _
     vector<vector<char> > answerKey = gameBoard;
+    vector<vector<char> > updatedBoard = gameBoard;
     // Replacing the gameboard with inital Status; # & _
     gameBoard = replaceBoard(gameBoard);
     printsBoard(gameBoard);
@@ -51,13 +52,17 @@ int main()
         cout << "\nEnter a letter:\n";
         cin >> guess;
         for (size_t i = 0; i < answerKey.size(); i++)
-        {   
+        {
             for (size_t j = 0; i < answerKey[i].size(); i++)
             {
-                
-            cout << answerKey[i][j];
+                if (updatedBoard[i][j]== guess)
+                {
+                    printsBoard(updatedBoard);
+                }
+                 
             }
         }
+        
         exhaustedGuess.push_back(guess);
     } while (true);
 }
@@ -88,24 +93,16 @@ void openLevel(ifstream &inFile)
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
             continue;
         }
-        if (level > 0)
+        if (level <= 3 && level > 0)
         {
-            switch (level)
-            {
-            case 1:
-                inFile.open("level1.txt");
-                break;
-            case 2:
-                inFile.open("level2.txt");
-                break;
-            case 3:
-                inFile.open("level3.txt");
-                break;
-            default:
-                cout << "Level files could not be found!\n";
-                break;
-            }
+            inFile.open("level" + to_string(level) + ".txt");
         }
+        if (level >= 4)
+        {
+            cout << "Level files could not be found!\n";
+            continue;
+        }
+
     } while (!inFile.is_open());
     cout << endl;
 }
