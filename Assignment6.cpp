@@ -29,178 +29,171 @@ bool exhuastedGuesses(vector<char>, char);
 int main()
 {
     // Variable Declaration
-    ifstream inFile;             // Input file stream variable
-    char guess = ' ';            // Letter to Check
-    vector<char> exhaustedGuess; // Vector contains the used guesses
-    int incorrectGuess = 5;      // Number of incorrect guess avaliable
+    ifstream inFile;  // Input file stream variable
+    char guess = ' '; // Letter to Check
+
+    int incorrectGuess = 5; // Number of incorrect guess avaliable
     char playAgain = ' ';
     bool playAgainFlag = false;
     bool gameOver = false;
+    vector<vector<char> > answerKey;
+    vector<vector<char> > gameBoard; // Vector conatians the level in a gameboard style
+    vector<char> exhaustedGuess;    // Vector contains the used guesses
+
     //  Display Game Logo
     displayLogo();
-   // Tracks what level is currently playing;
+    // Tracks what level is currently playing;
     openLevel(inFile);
-    
-    vector<vector<char> > gameBoard;// Vector conatians the level in a gameboard style
-
     gameBoard = readLevel(inFile);
-    
-    vector<vector<char> > answerKey = gameBoard;// This vector contains the answerkey before replacing the gameboard to only # & _
-    
-    gameBoard = replaceBoard(gameBoard);// Replacing the gameboard with inital Status; # & _
+    answerKey = gameBoard;               // This vector contains the answerkey before replacing the gameboard to only # & _
+    gameBoard = replaceBoard(gameBoard); // Replacing the gameboard with inital Status; # & _
     printsBoard(gameBoard);
-
     // Asking user for letter to check
     // Fix this it Works but need to do error checking
     do
     {
-         
 
-
-        //Checks for ending game 
+        // Checks for ending game
         if (incorrectGuess == 0)
         {
-            gameOver = true;
-            cout << "\nBetter luck next time!\n";
-            
-            if(gameOver == true){
-            do
-            {
-              cout << "play again? (y/n)\n";
+            cout << "play again? (y/n) ";
             cin >> playAgain;
             playAgain = toupper(playAgain);
-                if(playAgain == 'Y')
-                {
-                    incorrectGuess = 5;
-                    exhaustedGuess.clear();
-                    gameBoard.clear();
-                    inFile.clear();
-                    gameBoard = readLevel(inFile);
-                    gameBoard = replaceBoard(gameBoard);
-                    playAgainFlag = true;
-                    break;
-                }
-                if (playAgain == 'N')
-                {
-                    cout << "\nThank you for playing CrossWord!\n";
-                    exit(0);
-                    break;
-                }
-                if (playAgain != 'Y' || 'N')
-                {
-                    cout << "Invalid entry!\n";
-                    cin.clear();
-                    cin.ignore(numeric_limits<streamsize>::max(),'\n');
-                    continue;
-                }  
-            } while (true);
-            
-            
+            if (playAgain == 'Y')
+            {
+                cout << endl;
+                incorrectGuess = 5;
+                exhaustedGuess.clear();
+                gameBoard.clear();
+                answerKey.clear();
+                inFile.clear();
+                cin.clear();
+                openLevel(inFile);
+                gameBoard = readLevel(inFile);
+                answerKey = gameBoard;               // This vector contains the answerkey before replacing the gameboard to only # & _
+                gameBoard = replaceBoard(gameBoard); // Replacing the gameboard with inital Status; # & _
+                printsBoard(gameBoard);
+                continue;
+            }
+            if (playAgain == 'N')
+            {
+                cout << "\nThank you for playing CrossWord!\n";
+                exit(0);
+                break;
+            }
+            if (playAgain != 'Y' || 'N')
+            {
+                cout << "\nInvalid entry!\n";
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                continue;
             }
         }
         if (gameBoard == answerKey)
         {
-            cout << "\nCongratulations! you solved the level!\n";
-            gameOver = true;
+            cout << "Play again? (y/n) ";
+            cin >> playAgain;
+            playAgain = toupper(playAgain);
+            if (playAgain == 'Y')
+            {
+                cout << endl;
+                incorrectGuess = 5;
+                exhaustedGuess.clear();
+                gameBoard.clear();
+                answerKey.clear();
+                inFile.clear();
+                cin.clear();
+                openLevel(inFile);
+                gameBoard = readLevel(inFile);
+                answerKey = gameBoard;               // This vector contains the answerkey before replacing the gameboard to only # & _
+                gameBoard = replaceBoard(gameBoard); // Replacing the gameboard with inital Status; # & _
+                printsBoard(gameBoard);
+                continue;
+            }
+            if (playAgain == 'N')
+            {
+                cout << "\nThank you for playing CrossWord!\n";
+                exit(0);
+                break;
+            }
+            if (playAgain != 'Y' || 'N')
+            {
+                cout << "\nInvalid entry!\n";
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                continue;
+            }
+        }
+        // Main part of the game
+        if (gameOver == false)
+        {
             do
             {
-               cout << "Play again? (y/n) ";
-                cin >> playAgain;
-                playAgain = toupper(playAgain);
-                if(playAgain == 'Y')
-                {
-                    incorrectGuess = 5;
-                    exhaustedGuess.clear();
-                    gameBoard.clear();
-                    inFile.clear();
-                    gameBoard = readLevel(inFile);
-                    gameBoard = replaceBoard(gameBoard);
-                    playAgainFlag = true;
-                    break;
-                }
-                if (playAgain == 'N')
-                {
-                    cout << "Thank you for playing CrossWord!\n";
-                    exit(0);
-                    break;
-                }
-                if (playAgain != 'Y' || 'N')
-                {
-                    cout << "Invalid entry!\n";
-                    cin.clear();
-                    cin.ignore(numeric_limits<streamsize>::max(),'\n');
-                    continue;
-                } 
-            } while (true);
-            
-            if(gameOver == true){
 
-                 
-            }
-                
-        }
-
-    
-        // Main part of the game
-    
-        do
-        {  
-            cout << "\nEnter a letter:\n";
-            cin >> guess;
-            cin.ignore(numeric_limits<streamsize>::max(),'\n');
-            guess = toupper(guess);
-            //Checks if letter is an alphebitc and then adds to the loop
-            if (isalpha(guess))
-            {   bool usedGuess = exhuastedGuesses(exhaustedGuess, guess);
-                bool onBoard = onTheBoard(answerKey, guess);
-
-                if (onBoard == true)
+                cout << "\nEnter a letter:\n";
+                cin >> guess;
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                guess = toupper(guess);
+                // Checks if letter is an alphebitc and then adds to the loop
+                if (isalpha(guess))
                 {
-                    for (size_t i = 0; i < answerKey.size(); i++)
+                    bool usedGuess = exhuastedGuesses(exhaustedGuess, guess);
+                    bool onBoard = onTheBoard(answerKey, guess);
+
+                    if (onBoard == true)
                     {
-                        for (size_t j = 0; j < answerKey[i].size(); j++)
+                        for (size_t i = 0; i < answerKey.size(); i++)
                         {
-                            if (answerKey[i][j] == guess)
+                            for (size_t j = 0; j < answerKey[i].size(); j++)
                             {
-                                gameBoard.at(i).at(j) = guess;
+                                if (answerKey[i][j] == guess)
+                                {
+                                    gameBoard.at(i).at(j) = guess;
+                                }
                             }
-                            
+                        }
+                        // Printing stuff if the letter is not on the board
+                        if (usedGuess == true)
+                        {
+                            cout << "The letter is already guessed, try again!\n";
                         }
                     }
-                    //Printing stuff if the letter is not on the board
-                    if (usedGuess == true)
+                    // Prints info if its not on the board
+                    if (onBoard == false)
                     {
-                        cout << "The letter is already guessed, try again!\n";
+                        // Printing stuff if the letter is not on the board
+                        if (usedGuess == true)
+                        {
+                            cout << "The letter is already guessed, try again!\n";
+                        }
+                        else
+                        {
+                            cout << "The letter is not on the board\n";
+                            incorrectGuess--;
+                        }
                     }
-
+                    // Checks if its been gess then print
                 }
-                //Prints info if its not on the board 
-                if (onBoard == false)
-                {
-                    //Printing stuff if the letter is not on the board
-                    if (usedGuess == true)
-                    {
-                        cout << "The letter is already guessed, try again!\n";
-                    }
-                    else{
-                        cout << "The letter is not on the board\n";
-                        incorrectGuess--; 
-                    }          
-                }    
-                //Checks if its been gess then print
-            }
-            
-            cout << "Remaining incorrect guesses: " << incorrectGuess << endl;
-            cout << endl;
-            exhaustedGuess.push_back(guess);
-            printsBoard(gameBoard);
 
-        } while (false);
-        
+                cout << "Remaining incorrect guesses: " << incorrectGuess << endl;
+                cout << endl;
+                exhaustedGuess.push_back(guess);
+                printsBoard(gameBoard);
+                if (gameBoard == answerKey)
+                {
+                    cout << "\nCongratulations! you solved the level!\n";
+                }
+                if (incorrectGuess == 0)
+                {
+                    cout << "\nBetter luck next time!\n";
+                }
+
+            } while (false);
+        }
+
     } while (!playAgainFlag);
-    
-    
 }
+
 // Prints gameboard
 
 // Function to Print game Logo
@@ -286,7 +279,7 @@ void printsBoard(vector<vector<char> > board)
         cout << endl;
     }
 }
-//Checks if letter is on the board;
+// Checks if letter is on the board;
 bool onTheBoard(vector<vector<char> > answerKey, char guess)
 {
     for (size_t i = 0; i < answerKey.size(); i++)
@@ -297,19 +290,19 @@ bool onTheBoard(vector<vector<char> > answerKey, char guess)
             {
                 return true;
             }
-                            
         }
     }
     return false;
 }
-bool exhuastedGuesses(vector<char> exhaustedGuess , char guess)
+
+bool exhuastedGuesses(vector<char> exhaustedGuess, char guess)
 {
     for (size_t i = 0; i < exhaustedGuess.size(); i++)
-        {   
-            if (guess == exhaustedGuess[i])
-            {
-                return true;
-            }
+    {
+        if (guess == exhaustedGuess[i])
+        {
+            return true;
         }
-        return false;
+    }
+    return false;
 }
