@@ -35,29 +35,38 @@ int main()
     int incorrectGuess = 5;      // Number of incorrect guess avaliable
     char playAgain = ' ';
     bool playAgainFlag = false;
+    bool gameOver = false;
     //  Display Game Logo
     displayLogo();
-    // Tracks what level is currently playing;
+   // Tracks what level is currently playing;
     openLevel(inFile);
-    // Vector conatians the level in a gameboard style
-    vector<vector<char> > gameBoard;
+    
+    vector<vector<char> > gameBoard;// Vector conatians the level in a gameboard style
 
     gameBoard = readLevel(inFile);
-    // This vector contains the answerkey before replacing the gameboard to only # & _
-    vector<vector<char> > answerKey = gameBoard;
-    // Replacing the gameboard with inital Status; # & _
-    gameBoard = replaceBoard(gameBoard);
+    
+    vector<vector<char> > answerKey = gameBoard;// This vector contains the answerkey before replacing the gameboard to only # & _
+    
+    gameBoard = replaceBoard(gameBoard);// Replacing the gameboard with inital Status; # & _
     printsBoard(gameBoard);
 
     // Asking user for letter to check
     // Fix this it Works but need to do error checking
     do
     {
+         
+
+
         //Checks for ending game 
         if (incorrectGuess == 0)
         {
-            cout << "\nBetter luck next time!\n"
-             << "play again? (y/n)\n";
+            gameOver = true;
+            cout << "\nBetter luck next time!\n";
+            
+            if(gameOver == true){
+            do
+            {
+              cout << "play again? (y/n)\n";
             cin >> playAgain;
             playAgain = toupper(playAgain);
                 if(playAgain == 'Y')
@@ -69,11 +78,11 @@ int main()
                     gameBoard = readLevel(inFile);
                     gameBoard = replaceBoard(gameBoard);
                     playAgainFlag = true;
-                    continue;
+                    break;
                 }
                 if (playAgain == 'N')
                 {
-                    cout << "Thank you for playing CrossWord!\n";
+                    cout << "\nThank you for playing CrossWord!\n";
                     exit(0);
                     break;
                 }
@@ -83,14 +92,21 @@ int main()
                     cin.clear();
                     cin.ignore(numeric_limits<streamsize>::max(),'\n');
                     continue;
-                }
+                }  
+            } while (true);
+            
+            
+            }
         }
         if (gameBoard == answerKey)
         {
-            cout << "\nCongratulations! you solved the level!\n"
-                << "Play again? (y/n)\n";
-               cin >> playAgain;
-            playAgain = toupper(playAgain);
+            cout << "\nCongratulations! you solved the level!\n";
+            gameOver = true;
+            do
+            {
+               cout << "Play again? (y/n) ";
+                cin >> playAgain;
+                playAgain = toupper(playAgain);
                 if(playAgain == 'Y')
                 {
                     incorrectGuess = 5;
@@ -100,7 +116,7 @@ int main()
                     gameBoard = readLevel(inFile);
                     gameBoard = replaceBoard(gameBoard);
                     playAgainFlag = true;
-                    continue;
+                    break;
                 }
                 if (playAgain == 'N')
                 {
@@ -115,6 +131,13 @@ int main()
                     cin.ignore(numeric_limits<streamsize>::max(),'\n');
                     continue;
                 } 
+            } while (true);
+            
+            if(gameOver == true){
+
+                 
+            }
+                
         }
 
     
