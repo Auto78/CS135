@@ -32,5 +32,30 @@ struct PurchaseType
 int main()
 {
     ifstream inFile;
-    
+    string prompt = "Enter a file name\n**";
+    openFile(inFile, prompt);
+}
+
+/*
+          FUNCTION_IDENTIFIER: Function prompts user for file name
+          and then opens the file.
+          parameters: ifstream and string for the prompt
+          return value: Void: Non-Returning
+*/
+
+void openFile(ifstream &inFile, string prompt)
+{
+    string fileName;
+    do
+    {
+        cout << prompt;
+        getline(cin, fileName);
+        inFile.open(fileName);
+        if (!inFile.is_open())
+        {
+            cout << "\nError: Invalid File\n";
+            continue;
+        }
+        break;
+    } while (true);
 }
