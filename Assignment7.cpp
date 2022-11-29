@@ -39,49 +39,55 @@ const string INVALID_CREDENTIALS_MSG = "Error: invalid credentials\n";
 const string INV_CMD_MSG = "Error: invalid command name";
 const string SHOW_INV_OPT_MSG = "SHOW Error: invalid option";
 const string CREATE_INV_TABLE_NAME_MSG = "CREATE Error: table name should only contain"
-" alpha numeric characters, '-', or '_'";
+										 " alpha numeric characters, '-', or '_'";
 const string CREATE_EXISTS_MSG = "CREATE Error: table already exists";
 const string CREATE_INV_HEADERS_MSG = "CREATE Error: column names should be separated"
-" by delimiter and should only contain alpha numeric characters, '-', or '_'";
+									  " by delimiter and should only contain alpha numeric characters, '-', or '_'";
 const string DELETE_UNDELETABLE_MSG = "DELETE Error: table cannot be deleted";
 const string DELETE_INV_TABLE_NAME_MSG = "DELETE Error: invalid table name";
 
 void header();
 string toLower(string);
-void getCredentials(int, char const *[], string&, string&);
+void getCredentials(int, char const *[], string &, string &);
 bool validateCredentials(string, string);
 // sections 2/3 add function prototypes
 // YOUR CODE HERE
 void commandLoop();
+vector<string> getInput();
+string validateArguments(vector<string>);
+void executeCommand(vector<string>);
 
-
-
-int main(int argc, char const *argv[]) 
+int main(int argc, char const *argv[])
 {
 	string user = "", pass = "";
-	
+
 	getCredentials(argc, argv, user, pass);
 
-	if (validateCredentials(user, pass)) 
+	if (validateCredentials(user, pass))
 	{
-        // 1.2 call get header
-	    // YOUR CODE HERE
+		// 1.2 call get header
+		// YOUR CODE HERE
 		header();
-        
 
-        // 2.1 call the loop to get commands from the user
-	    // YOUR CODE HERE
+		// 2.1 call the loop to get commands from the user
+		// YOUR CODE HERE
 		commandLoop();
+		vector<string> args = getInput();
+		string valid = validateArguments(args);
+		if (valid != VALID_ARG_MSG)
+		{
+			cout << "ERORR:\n";
+		}
+		
 
-
-    }
+	}
 
 	return 0;
 }
 
 // used for section 1
 // prints header
-void header() 
+void header()
 {
 	cout << "+---------------------------------------------------------------------+\n"
 		 << "|   __   __  _______  _______  _     _    _______  _______  ___       |\n"
@@ -97,15 +103,16 @@ void header()
 
 // Used for section 2
 // lowercases string and returns it
-string toLower(string s) 
+string toLower(string s)
 {
-	for (char &x:s) x = static_cast<char>(tolower(x));
+	for (char &x : s)
+		x = static_cast<char>(tolower(x));
 	return s;
 }
 
 // Used for section 3
 // Prints the csv at the passed file path
-bool printTable(string file) 
+bool printTable(string file)
 {
 	string current = "", rest = "", delimiter = ",";
 	int rowCnt = 0;
@@ -114,7 +121,7 @@ bool printTable(string file)
 	int colCnt = count(current.begin(), current.end(), delimiter[0]) + 1;
 	toShow.seekg(0);
 	vector<unsigned int> widths(colCnt, 0);
-	while(getline(toShow, rest)) 
+	while (getline(toShow, rest))
 	{
 		for (int i = 0; i < colCnt; i++)
 		{
@@ -125,18 +132,19 @@ bool printTable(string file)
 		}
 		rowCnt++;
 	}
-	if(rowCnt > 1) 
+	if (rowCnt > 1)
 	{
 		toShow.clear();
 		toShow.seekg(0);
 		cout << file.substr(file.find("data/") + 5, file.length() - 9) << " table:\n";
 		cout << setfill('-') << right;
-		for (int i = 0; i < colCnt; i++) cout << "+" << setw(widths[i] + 3);
+		for (int i = 0; i < colCnt; i++)
+			cout << "+" << setw(widths[i] + 3);
 		cout << "+" << endl;
 		getline(toShow, current);
 		vector<string> ret;
 		string token = "";
-		while(current.find(delimiter) != string::npos) 
+		while (current.find(delimiter) != string::npos)
 		{
 			token = current.substr(0, current.find(delimiter));
 			current = current.erase(0, current.find(delimiter) + delimiter.length());
@@ -151,10 +159,10 @@ bool printTable(string file)
 		for (int i = 0; i < colCnt; i++)
 			cout << "+" << setw(widths[i] + 3);
 		cout << "+" << endl;
-		while(getline(toShow, current)) 
+		while (getline(toShow, current))
 		{
 			ret.clear();
-			while(current.find(delimiter) != string::npos) 
+			while (current.find(delimiter) != string::npos)
 			{
 				token = current.substr(0, current.find(delimiter));
 				current = current.erase(0, current.find(delimiter) + delimiter.length());
@@ -176,10 +184,11 @@ bool printTable(string file)
 	return false;
 }
 
-//DONE
-// Fill this function out for section 1.1
-void getCredentials(int argc, char const *argv[], string &user, string &pass) {
-	
+// DONE
+//  Fill this function out for section 1.1
+void getCredentials(int argc, char const *argv[], string &user, string &pass)
+{
+
 	// 1.1 get username and password from cmd args
 	// YOUR CODE HERE
 	if (argc != 3)
@@ -189,11 +198,11 @@ void getCredentials(int argc, char const *argv[], string &user, string &pass) {
 	}
 	user = argv[1];
 	pass = argv[2];
-
 }
 
 // Fill this function out for section 1.2
-bool validateCredentials(string u, string p) {
+bool validateCredentials(string u, string p)
+{
 	// 1.2 make sure proper user/pass
 	// YOUR CODE HERE
 	if (u != USER || p != PASS)
@@ -206,32 +215,50 @@ bool validateCredentials(string u, string p) {
 		cout << WELCOME_MSG << USER << endl;
 		return true;
 	}
-
 }
 
 // 2.1 add getInput() function
 // YOUR CODE HERE
-
-
+vector<string> getInput()
+{
+	string userInput;
+	vector<string> arguments;
+	cout << COMMAND_PROMPT;
+	getline(cin, userInput);
+	for (size_t i = 0; i < userInput.length(); i++)
+	{
+		userInput[i] = tolower(userInput[i]);
+	}
+	arguments.push_back(userInput);
+	return arguments;
+}
 
 // 2.1 add validateArguments(vector<string>) function
 // YOUR CODE HERE
+string validateArguments(vector<string> args)
+{
+	string validArguments = "";
+	for (size_t i = 0; i < args.size(); i++)
+	{
+		cout << args[i];
+	}
+	return validArguments;
 
-
+}
 
 // 2.1 add executeCommand(vector<string>) function
 // YOUR CODE HERE
-
-
+void executeCommand(vector<string> args);
 
 // 2.1 add commandLoop() function
 // YOUR CODE HERE
-
-
+void commandLoop()
+{
+}
 
 /*
 	DO NOT REMOVE
-	
+
 	Copyright 2022 Alex St. Aubin. All Rights Reserved.
 
 	Unauthorized reproductions of this handout and any accompanying code
