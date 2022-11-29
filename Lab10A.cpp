@@ -1,5 +1,5 @@
 /*
-Name: Alvaro Cruz, #5005488379, 1008, Lab20A
+Name: Alvaro Cruz, #5005488379, 1008, Lab10A
 Description: Simple Program to understand Struct Basics:
     Adding user inputted data into corressponding struct elements
     and printing said elements to the screen.
