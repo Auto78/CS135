@@ -4,6 +4,7 @@
 #include <vector>
 #include <stdio.h>
 #include <algorithm>
+#include <sstream>
 
 using namespace std;
 
@@ -72,14 +73,6 @@ int main(int argc, char const *argv[])
 		// 2.1 call the loop to get commands from the user
 		// YOUR CODE HERE
 		commandLoop();
-		vector<string> args = getInput();
-		string valid = validateArguments(args);
-		if (valid != VALID_ARG_MSG)
-		{
-			cout << "ERORR:\n";
-		}
-		
-
 	}
 
 	return 0;
@@ -221,6 +214,7 @@ bool validateCredentials(string u, string p)
 // YOUR CODE HERE
 vector<string> getInput()
 {
+
 	string userInput;
 	vector<string> arguments;
 	cout << COMMAND_PROMPT;
@@ -229,7 +223,13 @@ vector<string> getInput()
 	{
 		userInput[i] = tolower(userInput[i]);
 	}
-	arguments.push_back(userInput);
+
+	stringstream ss(userInput);
+	string UpdateUserInput;
+	while (getline(ss, UpdateUserInput, ' '))
+	{
+		arguments.push_back(UpdateUserInput);
+	}
 	return arguments;
 }
 
@@ -237,23 +237,48 @@ vector<string> getInput()
 // YOUR CODE HERE
 string validateArguments(vector<string> args)
 {
-	string validArguments = "";
-	for (size_t i = 0; i < args.size(); i++)
+	if (args.size() != 1 && args[0] == QUIT_CMD)
 	{
-		cout << args[i];
+		return QUIT_ARG_CNT_MSG;
 	}
-	return validArguments;
-
+	if (args[0] != QUIT_CMD)
+	{
+		return INV_CMD_MSG;
+	}
+	return VALID_ARG_MSG;
 }
 
 // 2.1 add executeCommand(vector<string>) function
 // YOUR CODE HERE
-void executeCommand(vector<string> args);
+void executeCommand(vector<string> args)
+{
+
+	if (args.size() == 1 && args[0] == QUIT_CMD)
+	{
+		exit(0);
+	}
+}
 
 // 2.1 add commandLoop() function
 // YOUR CODE HERE
 void commandLoop()
 {
+
+	do
+	{
+		vector<string> args = getInput();
+		string valid = validateArguments(args);
+		if (valid == INV_CMD_MSG)
+		{
+			cout << valid << endl;
+		}
+		if (valid == QUIT_ARG_CNT_MSG)
+		{
+			cout << valid << endl;
+		}
+		
+		executeCommand(args);
+	} while (true);
 }
 
 /*
