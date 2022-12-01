@@ -57,6 +57,7 @@ void commandLoop();
 vector<string> getInput();
 string validateArguments(vector<string>);
 void executeCommand(vector<string>);
+bool isAlphaNumericalAndUnderOrUpperScore(char);
 
 int main(int argc, char const *argv[])
 {
@@ -225,10 +226,10 @@ vector<string> getInput()
 	}
 
 	stringstream ss(userInput);
-	string UpdateUserInput;
-	while (getline(ss, UpdateUserInput, ' '))
+	string updateUserInput;
+	while (getline(ss, updateUserInput, ' '))
 	{
-		arguments.push_back(UpdateUserInput);
+		arguments.push_back(updateUserInput);
 	}
 	return arguments;
 }
@@ -237,14 +238,52 @@ vector<string> getInput()
 // YOUR CODE HERE
 string validateArguments(vector<string> args)
 {
-	if (args.size() != 1 && args[0] == QUIT_CMD)
-	{
-		return QUIT_ARG_CNT_MSG;
-	}
-	if (args[0] != QUIT_CMD)
+	ifstream inFile;
+
+	// Checks if count is wrong
+	if (args[0] != QUIT_CMD && args[0] != CREATE_CMD)
 	{
 		return INV_CMD_MSG;
 	}
+	// Quits command
+	if (args[0] == QUIT_CMD && args.size() != 1)
+	{
+		return QUIT_ARG_CNT_MSG;
+	}
+	// Creates Command
+	if (args[0] == CREATE_CMD && args.size() != 3)
+	{
+		return CREATE_ARG_CNT_MSG;
+	}
+	if (args[0] == CREATE_CMD)
+	{
+		string secondArgumentInsideCreate = args[1];
+		string thirdArgumentInsideCreate = args[2];
+
+		// Checks the thing is valid characters
+		for (size_t i = 0; i < secondArgumentInsideCreate.length(); i++)
+		{
+			if (isAlphaNumericalAndUnderOrUpperScore(secondArgumentInsideCreate[i]))
+			{
+				continue;
+			}
+			else
+			{
+				return CREATE_INV_TABLE_NAME_MSG;
+			}
+		}
+		// Checks if the file is already open
+		inFile.open(TABLE_FILE_DIRECTORY + args[1] + TABLE_FILETYPE);
+		if (inFile.is_open())
+		{
+			inFile.close();
+			return CREATE_EXISTS_MSG;
+		}
+		//Checks valid third argument
+		
+		
+	}
+
 	return VALID_ARG_MSG;
 }
 
@@ -252,7 +291,7 @@ string validateArguments(vector<string> args)
 // YOUR CODE HERE
 void executeCommand(vector<string> args)
 {
-
+	// Processes the quit command
 	if (args.size() == 1 && args[0] == QUIT_CMD)
 	{
 		exit(0);
@@ -263,11 +302,11 @@ void executeCommand(vector<string> args)
 // YOUR CODE HERE
 void commandLoop()
 {
-
 	do
 	{
 		vector<string> args = getInput();
 		string valid = validateArguments(args);
+		// Mulitple statements prints out infomation based on the command
 		if (valid == INV_CMD_MSG)
 		{
 			cout << valid << endl;
@@ -276,9 +315,31 @@ void commandLoop()
 		{
 			cout << valid << endl;
 		}
-		
+		if (valid == CREATE_ARG_CNT_MSG)
+		{
+			cout << valid << endl;
+		}
+		if (valid == CREATE_INV_TABLE_NAME_MSG)
+		{
+			cout << valid << endl;
+		}
+		if (valid == CREATE_EXISTS_MSG)
+		{
+			cout << valid << endl;
+		}
+
 		executeCommand(args);
 	} while (true);
+}
+
+// Homemade isAplhaNumerical
+bool isAlphaNumericalAndUnderOrUpperScore(char text)
+{
+	if ('a' <= text && text <= 'z' || '0' <= text && text <= '9' || text == '-' || text == '_')
+	{
+		return true;
+	}
+	return false;
 }
 
 /*
