@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <algorithm>
 #include <sstream>
+#include <string>
 
 using namespace std;
 
@@ -238,32 +239,45 @@ vector<string> getInput()
 // YOUR CODE HERE
 string validateArguments(vector<string> args)
 {
-	ifstream inFile;
 
-	// Checks if count is wrong
-	if (args[0] != QUIT_CMD && args[0] != CREATE_CMD)
+	ifstream inFile;
+	// Checks for Invalid Commmand
+	if (args[0] != QUIT_CMD && args[0] != CREATE_CMD && args[0] != SHOW_CMD)
 	{
 		return INV_CMD_MSG;
 	}
-	// Quits command
+
+	// Checks if Quit count is wrong
 	if (args[0] == QUIT_CMD && args.size() != 1)
 	{
 		return QUIT_ARG_CNT_MSG;
 	}
-	// Creates Command
+	// Check if Creates count is wrong
 	if (args[0] == CREATE_CMD && args.size() != 3)
 	{
 		return CREATE_ARG_CNT_MSG;
 	}
+	// Checks if Show count is wrong
+	if (args[0] == SHOW_CMD && args.size() != 2)
+	{
+		return SHOW_ARG_CNT_MSG;
+	}
+	//Checks if Shows 2nd argument is wrong
+	if (args[0] == SHOW_CMD && args[1] != SHOW_ARG_1)
+	{
+		return SHOW_INV_OPT_MSG;
+	}
+	
+	// Creates Command
 	if (args[0] == CREATE_CMD)
 	{
-		string secondArgumentInsideCreate = args[1];
-		string thirdArgumentInsideCreate = args[2];
+		string tableName = args[1];
+		string attributeList = args[2];
 
-		// Checks the thing is valid characters
-		for (size_t i = 0; i < secondArgumentInsideCreate.length(); i++)
+		// Checks the table Name is valid characters
+		for (size_t i = 0; i < tableName.length(); i++)
 		{
-			if (isAlphaNumericalAndUnderOrUpperScore(secondArgumentInsideCreate[i]))
+			if (isAlphaNumericalAndUnderOrUpperScore(tableName[i]))
 			{
 				continue;
 			}
@@ -279,10 +293,31 @@ string validateArguments(vector<string> args)
 			inFile.close();
 			return CREATE_EXISTS_MSG;
 		}
-		//Checks valid third argument
-		
+		// Loops to check for the characters
+		for (size_t i = 0; i < attributeList.length(); i++)
+		{
+			// Checks for comma errors
+			if (attributeList[i] == ',' && attributeList[i - 1] == ',')
+			{
+				return CREATE_INV_HEADERS_MSG;
+			}
+			// CHANGE THE IS ALNUM TO YOUR OWN
+			if (isalnum(attributeList[i]) || attributeList[i] == ',' || attributeList[i] == '-' || attributeList[i] == '_')
+			{
+				continue;
+			}
+			else
+			{
+				return CREATE_INV_HEADERS_MSG;
+			}
+		}
+	}
+	//Show command
+	if (args[0] == SHOW_CMD)
+	{
 		
 	}
+	
 
 	return VALID_ARG_MSG;
 }
@@ -291,10 +326,27 @@ string validateArguments(vector<string> args)
 // YOUR CODE HERE
 void executeCommand(vector<string> args)
 {
+	ofstream outFile;
 	// Processes the quit command
 	if (args.size() == 1 && args[0] == QUIT_CMD)
 	{
 		exit(0);
+	}
+	// Process the Create Command
+	if (args.size() == 3 && args[0] == CREATE_CMD)
+	{
+		outFile.open(TABLE_FILE_DIRECTORY + args[1] + TABLE_FILETYPE);
+		outFile << args[2];
+		outFile.close();
+		outFile.open(TABLES_TABLE, ios_base::app);
+		outFile << args[1] << endl;
+		cout << args[1] << TABLE_CREATE_SUCCESS_MSG << endl;
+		outFile.close();
+	}
+	//Process the Show Command
+	if (args[0] == SHOW_CMD)
+	{
+		printTable(TABLES_TABLE);
 	}
 }
 
@@ -307,27 +359,11 @@ void commandLoop()
 		vector<string> args = getInput();
 		string valid = validateArguments(args);
 		// Mulitple statements prints out infomation based on the command
-		if (valid == INV_CMD_MSG)
+		if (valid != VALID_ARG_MSG)
 		{
 			cout << valid << endl;
+			continue;
 		}
-		if (valid == QUIT_ARG_CNT_MSG)
-		{
-			cout << valid << endl;
-		}
-		if (valid == CREATE_ARG_CNT_MSG)
-		{
-			cout << valid << endl;
-		}
-		if (valid == CREATE_INV_TABLE_NAME_MSG)
-		{
-			cout << valid << endl;
-		}
-		if (valid == CREATE_EXISTS_MSG)
-		{
-			cout << valid << endl;
-		}
-
 		executeCommand(args);
 	} while (true);
 }
