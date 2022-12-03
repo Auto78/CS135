@@ -1,3 +1,10 @@
+/*
+	Name: Alvaro Cruz, 5005488379#, 1005, Assignment 7
+	Description: Program uses multiple actions to manipulate a SQL
+	Input: User inputs credentials to open and input to process commands
+	Output: Creates a table, deletes a table,and shows various details given
+	certain commands
+*/
 #include <iostream>
 #include <iomanip>
 #include <fstream>
@@ -59,6 +66,7 @@ vector<string> getInput();
 string validateArguments(vector<string>);
 void executeCommand(vector<string>);
 bool isAlphaNumericalAndUnderOrUpperScore(char);
+bool isAlphaNumericalAndUnderOrUpperScoreOrComma(char);
 
 int main(int argc, char const *argv[])
 {
@@ -205,11 +213,8 @@ bool validateCredentials(string u, string p)
 		cout << INVALID_CREDENTIALS_MSG;
 		return false;
 	}
-	else
-	{
-		cout << WELCOME_MSG << USER << endl;
-		return true;
-	}
+	cout << WELCOME_MSG << USER << endl;
+	return true;
 }
 
 // 2.1 add getInput() function
@@ -221,10 +226,7 @@ vector<string> getInput()
 	vector<string> arguments;
 	cout << COMMAND_PROMPT;
 	getline(cin, userInput);
-	for (size_t i = 0; i < userInput.length(); i++)
-	{
-		userInput[i] = tolower(userInput[i]);
-	}
+	userInput = toLower(userInput);
 
 	stringstream ss(userInput);
 	string updateUserInput;
@@ -239,10 +241,15 @@ vector<string> getInput()
 // YOUR CODE HERE
 string validateArguments(vector<string> args)
 {
-
 	ifstream inFile;
+	// Checks args for no input
+	if (args.size() == 0)
+	{
+		return INV_CMD_MSG;
+	}
+
 	// Checks for Invalid Commmand
-	if (args[0] != QUIT_CMD && args[0] != CREATE_CMD && args[0] != SHOW_CMD)
+	if (args[0] != QUIT_CMD && args[0] != CREATE_CMD && args[0] != SHOW_CMD && args[0] != DELETE_CMD)
 	{
 		return INV_CMD_MSG;
 	}
@@ -262,12 +269,18 @@ string validateArguments(vector<string> args)
 	{
 		return SHOW_ARG_CNT_MSG;
 	}
-	//Checks if Shows 2nd argument is wrong
+	// Checks if Delete count is wrong
+	if (args[0] == DELETE_CMD && args.size() != 2)
+	{
+		return DELETE_ARG_CNT_MSG;
+	}
+
+	// Checks if Shows 2nd argument is wrong
 	if (args[0] == SHOW_CMD && args[1] != SHOW_ARG_1)
 	{
 		return SHOW_INV_OPT_MSG;
 	}
-	
+
 	// Creates Command
 	if (args[0] == CREATE_CMD)
 	{
@@ -277,11 +290,7 @@ string validateArguments(vector<string> args)
 		// Checks the table Name is valid characters
 		for (size_t i = 0; i < tableName.length(); i++)
 		{
-			if (isAlphaNumericalAndUnderOrUpperScore(tableName[i]))
-			{
-				continue;
-			}
-			else
+			if (!isAlphaNumericalAndUnderOrUpperScore(tableName[i]))
 			{
 				return CREATE_INV_TABLE_NAME_MSG;
 			}
@@ -293,8 +302,18 @@ string validateArguments(vector<string> args)
 			inFile.close();
 			return CREATE_EXISTS_MSG;
 		}
+		// If starts with comma
+		if (attributeList[0] == ',')
+		{
+			return CREATE_INV_HEADERS_MSG;
+		}
+		// If ends with comma
+		if (attributeList[attributeList.length() - 1] == ',')
+		{
+			return CREATE_INV_HEADERS_MSG;
+		}
 		// Loops to check for the characters
-		for (size_t i = 0; i < attributeList.length(); i++)
+		for (size_t i = 1; i < attributeList.length(); i++)
 		{
 			// Checks for comma errors
 			if (attributeList[i] == ',' && attributeList[i - 1] == ',')
@@ -302,23 +321,35 @@ string validateArguments(vector<string> args)
 				return CREATE_INV_HEADERS_MSG;
 			}
 			// CHANGE THE IS ALNUM TO YOUR OWN
-			if (isalnum(attributeList[i]) || attributeList[i] == ',' || attributeList[i] == '-' || attributeList[i] == '_')
-			{
-				continue;
-			}
-			else
+			if (!isAlphaNumericalAndUnderOrUpperScoreOrComma(attributeList[i]))
 			{
 				return CREATE_INV_HEADERS_MSG;
 			}
 		}
 	}
-	//Show command
+	// Show command
 	if (args[0] == SHOW_CMD)
 	{
-		
+		return VALID_ARG_MSG;
 	}
-	
-
+	// Delete Command
+	if (args[0] == DELETE_CMD)
+	{
+		if (args[1] == "tables")
+		{
+			return DELETE_UNDELETABLE_MSG;
+		}
+		inFile.open(TABLE_FILE_DIRECTORY + args[1] + TABLE_FILETYPE);
+		if (inFile.is_open())
+		{
+			inFile.close();
+		}
+		else
+		{
+			return DELETE_INV_TABLE_NAME_MSG;
+		}
+	}
+	// Generic valid argument return
 	return VALID_ARG_MSG;
 }
 
@@ -326,6 +357,7 @@ string validateArguments(vector<string> args)
 // YOUR CODE HERE
 void executeCommand(vector<string> args)
 {
+	ifstream inFile;
 	ofstream outFile;
 	// Processes the quit command
 	if (args.size() == 1 && args[0] == QUIT_CMD)
@@ -343,10 +375,38 @@ void executeCommand(vector<string> args)
 		cout << args[1] << TABLE_CREATE_SUCCESS_MSG << endl;
 		outFile.close();
 	}
-	//Process the Show Command
+	// Process the Show Command
 	if (args[0] == SHOW_CMD)
 	{
 		printTable(TABLES_TABLE);
+	}
+	// Process the Delete Command
+	if (args[0] == DELETE_CMD)
+	{
+		// deletes the contents of the file NEED TO FIX THIS
+		inFile.open(TABLES_TABLE);
+
+		string updatedTablesString;
+		vector<string> updatedTablesVector;
+		while (getline(inFile, updatedTablesString))
+		{
+			updatedTablesVector.push_back(updatedTablesString);
+		}
+		inFile.close();
+		outFile.open(TABLES_TABLE);
+		for (size_t i = 0; i < updatedTablesVector.size(); i++)
+		{
+			if (updatedTablesVector[i] != args[1])
+			{
+				outFile << updatedTablesVector[i] << endl;
+			}
+		}
+		outFile.close();
+
+		// Deletes the filepath
+		string filePath = TABLE_FILE_DIRECTORY + args[1] + TABLE_FILETYPE;
+		remove(filePath.c_str());
+		cout << args[1] << TABLE_DELETE_SUCCESS_MSG << endl;
 	}
 }
 
@@ -371,13 +431,21 @@ void commandLoop()
 // Homemade isAplhaNumerical
 bool isAlphaNumericalAndUnderOrUpperScore(char text)
 {
-	if ('a' <= text && text <= 'z' || '0' <= text && text <= '9' || text == '-' || text == '_')
+	if (('a' <= text && text <= 'z') || ('0' <= text && text <= '9') || text == '-' || text == '_')
 	{
 		return true;
 	}
 	return false;
 }
-
+// same function but for the attributes
+bool isAlphaNumericalAndUnderOrUpperScoreOrComma(char text)
+{
+	if (('a' <= text && text <= 'z') || ('0' <= text && text <= '9') || text == '-' || text == '_' || text == ',')
+	{
+		return true;
+	}
+	return false;
+}
 /*
 	DO NOT REMOVE
 
