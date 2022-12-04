@@ -12,7 +12,6 @@
 #include <stdio.h>
 #include <algorithm>
 #include <sstream>
-#include <string>
 
 using namespace std;
 
@@ -65,8 +64,9 @@ void commandLoop();
 vector<string> getInput();
 string validateArguments(vector<string>);
 void executeCommand(vector<string>);
-bool isAlphaNumericalAndUnderOrUpperScore(char);
-bool isAlphaNumericalAndUnderOrUpperScoreOrComma(char);
+// Extra handy-dandy Homemade Functions
+bool isValidName(char);
+bool isValidAttribute(char);
 
 int main(int argc, char const *argv[])
 {
@@ -187,7 +187,6 @@ bool printTable(string file)
 	return false;
 }
 
-// DONE
 //  Fill this function out for section 1.1
 void getCredentials(int argc, char const *argv[], string &user, string &pass)
 {
@@ -221,13 +220,15 @@ bool validateCredentials(string u, string p)
 // YOUR CODE HERE
 vector<string> getInput()
 {
-
+	// Getline user input and lowercase it
 	string userInput;
 	vector<string> arguments;
 	cout << COMMAND_PROMPT;
 	getline(cin, userInput);
 	userInput = toLower(userInput);
 
+	// Using StringStream to split string and pushBack
+	// individal sections to vector
 	stringstream ss(userInput);
 	string updateUserInput;
 	while (getline(ss, updateUserInput, ' '))
@@ -249,6 +250,7 @@ string validateArguments(vector<string> args)
 	}
 
 	// Checks for Invalid Commmand
+	// Im sure there is a better way of handling this
 	if (args[0] != QUIT_CMD && args[0] != CREATE_CMD && args[0] != SHOW_CMD && args[0] != DELETE_CMD)
 	{
 		return INV_CMD_MSG;
@@ -290,7 +292,7 @@ string validateArguments(vector<string> args)
 		// Checks the table Name is valid characters
 		for (size_t i = 0; i < tableName.length(); i++)
 		{
-			if (!isAlphaNumericalAndUnderOrUpperScore(tableName[i]))
+			if (!isValidName(tableName[i]))
 			{
 				return CREATE_INV_TABLE_NAME_MSG;
 			}
@@ -321,7 +323,7 @@ string validateArguments(vector<string> args)
 				return CREATE_INV_HEADERS_MSG;
 			}
 			// CHANGE THE IS ALNUM TO YOUR OWN
-			if (!isAlphaNumericalAndUnderOrUpperScoreOrComma(attributeList[i]))
+			if (!isValidAttribute(attributeList[i]))
 			{
 				return CREATE_INV_HEADERS_MSG;
 			}
@@ -339,6 +341,8 @@ string validateArguments(vector<string> args)
 		{
 			return DELETE_UNDELETABLE_MSG;
 		}
+		// Checks if file is openable otherwise file doesn't exist
+		// thus it can not be deleted
 		inFile.open(TABLE_FILE_DIRECTORY + args[1] + TABLE_FILETYPE);
 		if (inFile.is_open())
 		{
@@ -367,9 +371,11 @@ void executeCommand(vector<string> args)
 	// Process the Create Command
 	if (args.size() == 3 && args[0] == CREATE_CMD)
 	{
+		// Opens corresponding FilePath and prints contents to file
 		outFile.open(TABLE_FILE_DIRECTORY + args[1] + TABLE_FILETYPE);
 		outFile << args[2];
 		outFile.close();
+		// Prints corresponding Content to main file
 		outFile.open(TABLES_TABLE, ios_base::app);
 		outFile << args[1] << endl;
 		cout << args[1] << TABLE_CREATE_SUCCESS_MSG << endl;
@@ -383,9 +389,10 @@ void executeCommand(vector<string> args)
 	// Process the Delete Command
 	if (args[0] == DELETE_CMD)
 	{
-		// deletes the contents of the file NEED TO FIX THIS
+		// Deletes the File contents
 		inFile.open(TABLES_TABLE);
 
+		// Gathers current file contents
 		string updatedTablesString;
 		vector<string> updatedTablesVector;
 		while (getline(inFile, updatedTablesString))
@@ -394,6 +401,8 @@ void executeCommand(vector<string> args)
 		}
 		inFile.close();
 		outFile.open(TABLES_TABLE);
+
+		// Reprints file without the corresponding content
 		for (size_t i = 0; i < updatedTablesVector.size(); i++)
 		{
 			if (updatedTablesVector[i] != args[1])
@@ -403,7 +412,7 @@ void executeCommand(vector<string> args)
 		}
 		outFile.close();
 
-		// Deletes the filepath
+		// Deletes the filepath of unwanted content
 		string filePath = TABLE_FILE_DIRECTORY + args[1] + TABLE_FILETYPE;
 		remove(filePath.c_str());
 		cout << args[1] << TABLE_DELETE_SUCCESS_MSG << endl;
@@ -418,7 +427,7 @@ void commandLoop()
 	{
 		vector<string> args = getInput();
 		string valid = validateArguments(args);
-		// Mulitple statements prints out infomation based on the command
+		// Loop Prints corresponding Error Message
 		if (valid != VALID_ARG_MSG)
 		{
 			cout << valid << endl;
@@ -428,8 +437,13 @@ void commandLoop()
 	} while (true);
 }
 
-// Homemade isAplhaNumerical
-bool isAlphaNumericalAndUnderOrUpperScore(char text)
+/*
+	FUNCTION_IDENTIFIER: Checks char is alphabetic, Numerical, -, or underscore
+	parameters: Char
+	return value: Returns boolean value True if within acceptable parameters
+	else returns a default value False.
+*/
+bool isValidName(char text)
 {
 	if (('a' <= text && text <= 'z') || ('0' <= text && text <= '9') || text == '-' || text == '_')
 	{
@@ -437,11 +451,17 @@ bool isAlphaNumericalAndUnderOrUpperScore(char text)
 	}
 	return false;
 }
-// same function but for the attributes
-bool isAlphaNumericalAndUnderOrUpperScoreOrComma(char text)
+/*
+	FUNCTION_IDENTIFIER: Checks char is alphabetic, Numerical, -, _, or comma
+	parameters: Char
+	return value: Returns boolean value True if within acceptable parameters
+	else returns a default value False.
+	*/
+bool isValidAttribute(char text)
 {
 	if (('a' <= text && text <= 'z') || ('0' <= text && text <= '9') || text == '-' || text == '_' || text == ',')
 	{
+
 		return true;
 	}
 	return false;
